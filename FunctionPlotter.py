@@ -112,12 +112,10 @@ class FunctionPlotWidget(QWidget):
                 QMessageBox.critical(self, "Error", invalid_function_message)
                 return
 
-        # Handle any parsing or evaluation errors
-
         # Clear the previous plot and create a new one
         self.figure.clear()
         ax = self.figure.add_subplot(111)
-        ax.plot(x, y)
+        ax.plot(x, y, color="red", linewidth=2)
 
         # Draw the canvas to update the plot
         self.canvas.draw()
@@ -171,9 +169,12 @@ def evaluate_function(function, x_value):
     # Substitute the value of 'x'
     expr_with_x = expr.subs(x, x_value)
     # Evaluate the expression
-    result = expr_with_x.evalf()
     # check result is a number
-    return float(result)
+    try:
+        result = expr_with_x.evalf()
+        return float(result)
+    except (ZeroDivisionError, ValueError):
+        return None
 
 
 if __name__ == "__main__":
